@@ -1,6 +1,6 @@
 import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, useAnimations, Html } from '@react-three/drei';
+import { OrbitControls, useGLTF, useAnimations, Html, Stage } from '@react-three/drei';
 import * as THREE from 'three';
 import './App.css';
 import { CSS2DObject } from 'three/examples/jsm/Addons.js';
@@ -15,9 +15,6 @@ function Hotspot({ target,position }) {
       target.updateMatrixWorld(true);
       const pos = new THREE.Vector3();
       target.getWorldPosition(pos);
-      pos.x/=5;
-      pos.y/=5;
-      pos.z/=5;
       
       if (!offsetRef.value) {
         // Calculate and store the initial offset only once
@@ -148,10 +145,12 @@ function AnimatedModel(props) {
   return (
     <>
       <group ref={group} {...props}>
-        <primitive object={scene} onPointerDown={handleClick}/>
+        <Stage>
+        <primitive object={scene} onClick={(e)=>handleClick(e)}/>
         {hotspotTarget && <Hotspot target={scene.getObjectByName('Fergo_Valve003')} position={[-0.1146394476620296,0.215996371037993,0.0353179584531134]}/>}
         {hotspotTarget && <Hotspot target={scene.getObjectByName('Mesh011')} position={[-0.0146394476620296,0.355996371037993,0.0153179584531134]}/>}
         {hotspotTarget && <Hotspot target={scene.getObjectByName('Fergo_Valve020')} position={[-0.0746394476620296,0.085996371037993,0.0753179584531134]}/>}
+        </Stage>
       </group>
       <Html>
         <button
@@ -189,7 +188,7 @@ function App() {
         <ambientLight intensity={0.5} />
         <directionalLight position={[2, 2, 5]} intensity={1} />
         <Suspense fallback={null}>
-          <AnimatedModel scale={5} />
+          <AnimatedModel />
         </Suspense>
         <OrbitControls />
       </Canvas>
